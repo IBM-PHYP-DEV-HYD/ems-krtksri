@@ -150,7 +150,7 @@ ReturnType IsInputValid() {
     if (std::cin.fail()) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); /* discard the invalid input */
-        std::cout << "Invlaid input, please enter valid value.." << std::endl;
+        std::cout << "Invalid input, please enter valid value.." << std::endl;
         sRetValue = Rc_Failure;
     }
     return sRetValue;

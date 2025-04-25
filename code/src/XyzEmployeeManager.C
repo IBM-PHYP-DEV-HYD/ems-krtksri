@@ -92,11 +92,11 @@ XyzEmployeeIF* XyzEmployeeManager::createEmployeeObject(EmpType baseEmpParm) {
 void XyzEmployeeManager::addEmployee(EmpType baseEmpParm) {
     XyzEmployeeIF* empObj = createEmployeeObject(baseEmpParm);
     if (nullptr != empObj) {
-        if (Resigned == empObj->getEmployeeStatus()) {
-            mResignedEmpList.pushBack(empObj);
+        if (Resigned != empObj->getEmployeeStatus()) {
+            mEmpList.pushBack(empObj);
         }
         else {
-            mEmpList.pushBack(empObj);
+            mResignedEmpList.pushBack(empObj);
         }
     }
 }
@@ -105,7 +105,6 @@ void XyzEmployeeManager::removeEmployee(std::string & empIdParm) {
     if (!empIdParm.empty()) {
         int pos = searchEmployeeById(empIdParm);
         if (pos >= 0) {
-            mResignedEmpList.pushBack(mEmpList[pos]);
             mEmpList.RemoveElementAt(pos);
         }
         else {
@@ -213,7 +212,7 @@ void XyzEmployeeManager::processAddMenu(int sChoiceParm) {
         case Menu_option_2:
         {
             std::cout << "Enter employee type 0 = FullTime, 1 = Contract, 2 = Intern " << std::endl;
-            int empType = Rc_Failure;
+            int empType = FullTime;
             std::cin >> empType;
             if (Rc_Failure == IsInputValid()) {
                 std::cout << "Please enter valid employee type " << std::endl;
