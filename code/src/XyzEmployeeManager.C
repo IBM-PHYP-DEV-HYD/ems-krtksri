@@ -271,24 +271,7 @@ void XyzEmployeeManager::processOtherMenu(int sChoiceParm) {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
             std::getline(std::cin, sEmpID);
             if (Rc_Success == IsInputValid()) {
-                int idx = 0;
-                for (idx = 0; idx < mEmpList.size(); idx++) {
-                    XyzEmployeeIF*  empObj= mEmpList[idx];
-                    if ((sEmpID == empObj->getEmployeeID()) && (FullTime != empObj->getEmployeeType())) {
-                        Date sDOL;
-                        std::string sEmpID = empObj->getEmployeeID();
-                        sEmpID.back() = 'F';
-                        XyzEmployeeIF* fullTimeEmp = new XyzFullTimeEmployee(sEmpID, empObj->getEmployeeName(), empObj->getEmployeeGender(), 
-                                                                             empObj->getEmployeeDOB(), empObj->getEmployeeStatus(), FullTime, 
-                                                                             empObj->getEmployeeDOJ(), sDOL, 0, (uint32_t)MaxLeaves);
-                        mEmpList.RemoveElementAt(idx);
-                        mEmpList.pushBack(fullTimeEmp);
-                        break;
-                    }
-                }
-                if(idx == mEmpList.size()) {
-                    std::cout << "Invalid employee Id" << std::endl;
-                }
+                convertToFullTimeEmployee(sEmpID);
             }
             break;
         }
@@ -354,11 +337,47 @@ int XyzEmployeeManager::searchEmployeeById(std::string& inputIdParm) {
     return sRetVal;
 }
 
-void XyzEmployeeManager::convertToFullTimeEmployee(std::string& empId) {
-
+void XyzEmployeeManager::searchResignedEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList) {
+    for (int i = 0; i < mResignedEmpList.size(); i++) {
+        XyzEmployeeIF* empObj = mResignedEmpList[i];
+        if (inputNameParm == empObj->getEmployeeName()) {
+            empList.pushBack(empObj);
+        }
+    }
 }
-void XyzEmployeeManager::addLeavesToFullTimeEmployees() {
 
+int XyzEmployeeManager::searchResignedEmployeeById(std::string& inputIdParm) {
+    int sRetVal = Rc_Failure;
+    for (int i = 0; i < mResignedEmpList.size(); i++) {
+        XyzEmployeeIF* empObj = mResignedEmpList[i];
+        if (inputIdParm == empObj->getEmployeeID()) {
+            sRetVal = i;
+            break;
+        }
+    }
+    return sRetVal;
+}
+
+void XyzEmployeeManager::convertToFullTimeEmployee(std::string& empIdParm) {
+    int idx = 0;
+    for (idx = 0; idx < mEmpList.size(); idx++) {
+        XyzEmployeeIF*  empObj= mEmpList[idx];
+        if ((empIdParm == empObj->getEmployeeID()) && (FullTime != empObj->getEmployeeType())) {
+            Date sDOL;
+            std::string sEmpID = empObj->getEmployeeID();
+            sEmpID.back() = 'F';
+            XyzEmployeeIF* fullTimeEmp = new XyzFullTimeEmployee(sEmpID, empObj->getEmployeeName(), empObj->getEmployeeGender(), 
+                                                                 empObj->getEmployeeDOB(), empObj->getEmployeeStatus(), FullTime, 
+                                                                 empObj->getEmployeeDOJ(), sDOL, 0, (uint32_t)MaxLeaves);
+            mEmpList.RemoveElementAt(idx);
+            mEmpList.pushBack(fullTimeEmp);
+            break;
+        }
+    }
+
+    if(idx == mEmpList.size()) {
+        std::cout << "Invalid employee Id" << std::endl;
+    }
 }
 
 int XyzEmployeeManager::printColumns(EmpColumns empTypeParm) {

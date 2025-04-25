@@ -159,10 +159,6 @@ enum ColumnNames {
     Column_EmpDOB,
     Column_EmpDOJ,
     Column_EmpDOL
-    //EmpLeaves,
-    //EmpAgency,
-    //EmpCollege,
-    //EmpBranch
 };
 
 struct Date
@@ -199,26 +195,6 @@ struct Date
         tempDate.mDay = mDay + dateParm.mDay;
         return tempDate;
     }
-
-    /*
-    bool operator>(Date& dateParm) {
-        bool sRetVal = false;
-
-        if (mYear > dateParm.mYear) {
-            sRetVal = true;
-        }
-        else if (mYear == dateParm.mYear) {
-            if (mMonth > dateParm.mMonth) {
-                sRetVal = true;
-            }
-            else if (mMonth == dateParm.mMonth) {
-                if (mDay > dateParm.mDay) {
-                    sRetVal = true;
-                }
-            }
-        }
-        return sRetVal;
-    }*/
 
     std::string toString() {
         std::string sDate;
@@ -268,5 +244,11 @@ std::string& getEmployeeCollegeName(Colleges collegeParm);
 std::string& getEmployeeBranchName(Branch branchParm);
 
 ReturnType IsInputValid();
+
+int DisplayMainMenu();
+int DisplayRemoveMenu();
+int DisplayAddMenu();
+int DisplayDetailsMenu();
+int DisplayOthersMenu();
 
 #endif

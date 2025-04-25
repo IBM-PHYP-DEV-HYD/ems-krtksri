@@ -114,20 +114,6 @@ std::string getRandomEmpID(EmpType empType) {
     return empID;
 }
 
-#if 0
-std::string getRandomDate(int yearParm) {
-    std::string sDate;
-    std::stringstream ss;
-    ss << std::setw(2) << std::setfill('0') << getRandomNumber(1, 12);
-    sDate = std::to_string(yearParm) + "-" + ss.str() + "-" ;
-    ss.str("");
-    ss << std::setw(2) << std::setfill('0') << getRandomNumber(1,28);
-    sDate += ss.str();
-
-    return sDate;
-}
-#endif
-
 Date getRandomDate(uint32_t yearParm) {
     uint32_t sDay = getRandomNumber(1, 28);
     uint32_t sMonth = getRandomNumber(1, 12);
@@ -170,6 +156,86 @@ ReturnType IsInputValid() {
     return sRetValue;
 }
 
-void printEmployeeDetailsColumns() {
 
+int DisplayMainMenu() {
+    int choice = -1;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "|                 Employee Management System              |" <<std::endl;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "|               1. Add an Employee                        |" <<std::endl;
+    std::cout << "|               2. Remove an Employee                     |" <<std::endl;
+    std::cout << "|               3. Get Employee Details                   |" <<std::endl;
+    std::cout << "|               4. Do Something else                      |" <<std::endl;
+    std::cout << "|                 (Enter -1 to exit)                      |" <<std::endl;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "Your Choice:" <<std::endl;
+    std::cin >> choice;
+    IsInputValid();
+    return choice;
+}
+
+int DisplayRemoveMenu() {
+    int choice = -1;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "|                 Employee Management System              |" <<std::endl;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "|               1. Enter Employee ID                      |" <<std::endl;
+    std::cout << "|               2. Enter Employee name                    |" <<std::endl;
+    std::cout << "|                 (Enter -1 to go back to main menu)      |" <<std::endl;
+    std::cin >> choice;
+    IsInputValid();
+    return choice;
+}
+
+int DisplayAddMenu() {
+    int choice = -1;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "|                 Employee Management System              |" <<std::endl;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "| Add an Employee :                                       |" <<std::endl;
+    std::cout << "|               1. Add an Employee at Random              |" <<std::endl;
+    std::cout << "|               2. Add an Employee (F/C/I)                |" <<std::endl;
+    std::cout << "|               3. Add n number of Employees at once      |" <<std::endl;
+    std::cout << "|                 (Enter -1 to go back to main menu)      |" <<std::endl;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "Your Choice:" <<std::endl;
+    std::cin >> choice;
+    IsInputValid();
+    return choice;
+}
+
+int DisplayDetailsMenu() {
+    int choice = -1;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "|                 Employee Management System              |" <<std::endl;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "| Get Employee Details :                                  |" <<std::endl;
+    std::cout << "|               1. All Employees Summary NA               |" <<std::endl;
+    std::cout << "|               2. Employee Summary (F/C/I) Type          |" <<std::endl;
+    std::cout << "|               3. Employee Summary (M/F/T) Gender        |" <<std::endl;
+    std::cout << "|               4. Employee Summary (A/I/R) Status        |" <<std::endl;
+    std::cout << "|               5. Display Employee Details               |" <<std::endl;
+    std::cout << "|                 (Enter -1 to go back to main menu)      |" <<std::endl;
+    std::cout << "-----------------------------------------------------------" <<std::endl;
+    std::cout << "Your Choice:" <<std::endl;
+    std::cin >> choice;
+    IsInputValid();
+    return choice;
+}
+
+int DisplayOthersMenu() {
+    int choice = -1;
+    std::cout << "---------------------------------------------------------------------------" <<std::endl;
+    std::cout << "|                      Employee Management System                         |" <<std::endl;
+    std::cout << "---------------------------------------------------------------------------" <<std::endl;
+    std::cout << "|               1. Add n number of leaves to all the Full-Time employees  |" <<std::endl;
+    std::cout << "|               2. Convert an employee to Full-Time.                      |" <<std::endl;
+    std::cout << "|               3. Search an Employee by ID                               |" <<std::endl;
+    std::cout << "|               4. Search an Employee by Name                             |" <<std::endl;
+    std::cout << "|                 (Enter -1 to go back to previous menu)                  |" <<std::endl;
+    std::cout << "---------------------------------------------------------------------------"<<std::endl;
+    std::cout << "Your Choice:" <<std::endl;
+    std::cin >> choice;
+    IsInputValid();
+    return choice;
 }

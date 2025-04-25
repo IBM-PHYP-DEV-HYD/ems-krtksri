@@ -28,11 +28,13 @@ class XyzEmployeeManager {
     void removeEmployee(std::string& empId);
     void searchEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
     int  searchEmployeeById(std::string& inputParm); //This will return the index of the employee object in the list
+    void searchResignedEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
+    int searchResignedEmployeeById(std::string& inputIdParm);
     void convertToFullTimeEmployee(std::string& empId);
-    void addLeavesToFullTimeEmployees();
     void processAddMenu(int sChoiceParm);
     void processDetailsMenu(int sChoiceParm);
     void processOtherMenu(int sChoiceParm);
+
 
     size_t getMaxNameColumnWidth();
     int printColumns(EmpColumns empColumnsParm = BasicEmpColumns);

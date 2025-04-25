@@ -26,10 +26,13 @@ EDeque<T>::~EDeque(){
 
 template <class T>
 void EDeque<T>::AddElementAt(unsigned long int posParm, T& dataParm) {
-    //Deque<T>::operator[](posParm) = dataParm;
     Node<T>* sCurrentNode =  this->mHead;
     uint64_t idx = 0;
-    if (this->mSize > 0) {
+    if (nullptr != this->mHead) {
+        Node<T> *tNode = new Node(dataParm);
+        this->mHead = tNode;
+    }
+    else if (this->mSize > 0) {
         while((nullptr != sCurrentNode) && (idx < posParm)) {
             sCurrentNode = sCurrentNode->next;
             idx++;
@@ -60,8 +63,9 @@ void EDeque<T>::RemoveElementAt(unsigned long int posParm) {
             sCurrentNode = sCurrentNode->next;
             idx++;
         }
-        Node<T>* prevNode = sCurrentNode->prev;
-        if (nullptr != prevNode) {
+        
+        if (nullptr != sCurrentNode->prev) {
+            Node<T>* prevNode = sCurrentNode->prev;
             if (nullptr != sCurrentNode->next) { //in case current node is last node in the list
                 prevNode->next = sCurrentNode->next;
                 sCurrentNode->next->prev = prevNode;
@@ -69,7 +73,9 @@ void EDeque<T>::RemoveElementAt(unsigned long int posParm) {
         }
         else {
             this->mHead = sCurrentNode->next;
-            sCurrentNode->next->prev = nullptr;
+            if (nullptr != this->mHead) {
+                this->mHead->prev = nullptr;
+            }
         }
         delete sCurrentNode;
         this->mSize--;
