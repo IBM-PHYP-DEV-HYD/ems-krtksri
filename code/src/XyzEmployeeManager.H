@@ -15,9 +15,7 @@ class XyzEmployeeManager {
     EDeque<XyzEmployeeIF*> mEmpList;
     //TODO - Here we no need to maintain all the details like current employee, Try to cut down the data which is not needed
     EDeque<XyzEmployeeIF*> mResignedEmpList; 
-
     Deque<std::string> mColumns;
-    
     size_t mMaxEmpNameLength;
 
     XyzEmployeeManager();
@@ -26,16 +24,14 @@ class XyzEmployeeManager {
     XyzEmployeeIF* createEmployeeObject(EmpType baseEmpParm);
     void addEmployee(EmpType empTypeParm);
     void removeEmployee(std::string& empId);
-    void searchEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
-    int  searchEmployeeById(std::string& inputParm); //This will return the index of the employee object in the list
-    void searchResignedEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
-    int searchResignedEmployeeById(std::string& inputIdParm);
     void convertToFullTimeEmployee(std::string& empId);
     void processAddMenu(int sChoiceParm);
     void processDetailsMenu(int sChoiceParm);
     void processOtherMenu(int sChoiceParm);
-
-
+    void searchEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
+    void searchResignedEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
+    int  searchEmployeeById(std::string& inputParm);
+    int  searchResignedEmployeeById(std::string& inputIdParm);
     size_t getMaxNameColumnWidth();
     int printColumns(EmpColumns empColumnsParm = BasicEmpColumns);
 };
