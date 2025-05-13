@@ -4,20 +4,27 @@
 #include "XyzEmployeeImpl.H"
 #include "Utilities.H"
 
+using namespace EMS;
 XyzEmployeeImpl::XyzEmployeeImpl() {
 
 }
 
-XyzEmployeeImpl::XyzEmployeeImpl (const std::string& sEmpIdParm, const std::string& sNameParm, EmpGender sGenderParm, const Date& sDOBParm, 
-                EmpStatus sStatusParm, EmpType sTypeParm, const Date& sDOJParm, const Date& sDOLParm) :
-mEmpId(sEmpIdParm),
-mEmpName(sNameParm),
-mEmpGender(sGenderParm),
-mEmpDOB(sDOBParm),
-mEmpStatus(sStatusParm),
-mEmpType(sTypeParm),
-mEmpDOJ(sDOJParm),
-mEmpDOL(sDOLParm){
+XyzEmployeeImpl::XyzEmployeeImpl (const std::string& sEmpIdParm, 
+                                  const std::string& sNameParm,
+                                  EmpGender sGenderParm,
+                                  const Date& sDOBParm,
+                                  EmpStatus sStatusParm,
+                                  EmpType sTypeParm,
+                                  const Date& sDOJParm,
+                                  const Date& sDOLParm)
+:mEmpId(sEmpIdParm)
+,mEmpName(sNameParm)
+,mEmpGender(sGenderParm)
+,mEmpDOB(sDOBParm)
+,mEmpStatus(sStatusParm)
+,mEmpType(sTypeParm)
+,mEmpDOJ(sDOJParm)
+,mEmpDOL(sDOLParm){
 }
 
 XyzEmployeeImpl::~XyzEmployeeImpl() {
@@ -122,11 +129,15 @@ void XyzEmployeeImpl::getEmployeeSummary(size_t maxColumnLenParm, std::stringstr
     sEmpInfoParm << "| " << std::left << std::setw(16) << (((FullTime == getEmployeeType()) && (Resigned != getEmployeeStatus())) ? "N/A" : sDOL);
 }
 
-void XyzEmployeeImpl::printEmployeeSummary(size_t maxColumnLenParm, bool printAll) {
-    std::stringstream sRow;
-    getEmployeeSummary(maxColumnLenParm, sRow);
-    sRow << std::left << "|";
-    std::cout << sRow.str() << std::endl;
+void XyzEmployeeImpl::getEmpRecord(XyzEmployeeRecord &empRecordParm) {
+    empRecordParm.sEmpName = mEmpName;
+    empRecordParm.sEmpID = mEmpId;
+    empRecordParm.sEmpType = empTypeNames[mEmpType];
+    empRecordParm.sEmpStatus = empStatusNames[mEmpStatus];
+    empRecordParm.sEmpGender = empGenderNames[mEmpGender];
+    empRecordParm.sEmpDOB = mEmpDOB.toString();
+    empRecordParm.sEmpDOJ = mEmpDOJ.toString();
+    empRecordParm.sEmpDOL = mEmpDOL.toString();
 }
 
 void XyzEmployeeImpl::printEmployeeDetails() {

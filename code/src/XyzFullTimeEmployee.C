@@ -1,5 +1,7 @@
 #include "XyzFullTimeEmployee.H"
 
+using namespace EMS;
+
 XyzFullTimeEmployee::XyzFullTimeEmployee() {
 
 }
@@ -10,12 +12,26 @@ mNumOfLeavesAvailed(sLeavesAvailed), mNumOfLeavesLeft(sLeavesLeft){
 
 }
 
-XyzFullTimeEmployee::XyzFullTimeEmployee(const std::string& sEmpIdParm, const std::string& sNameParm, EmpGender sGenderParm, 
-    const Date& sDOBParm, EmpStatus sStatusParm, EmpType sTypeParm, const Date& sDOJParm,
-    const Date& sDOLParm, uint32_t sLeavesAvailed, uint32_t sLeavesLeft):
-XyzEmployeeImpl::XyzEmployeeImpl(sEmpIdParm, sNameParm, sGenderParm, sDOBParm, sStatusParm, sTypeParm, sDOJParm, sDOLParm),
-mNumOfLeavesAvailed(sLeavesAvailed),
-mNumOfLeavesLeft(sLeavesLeft)
+XyzFullTimeEmployee::XyzFullTimeEmployee(const std::string& sEmpIdParm,
+                                         const std::string& sNameParm,
+                                         EmpGender sGenderParm, 
+                                         const Date& sDOBParm,
+                                         EmpStatus sStatusParm,
+                                         EmpType sTypeParm,
+                                         const Date& sDOJParm,
+                                         const Date& sDOLParm,
+                                         uint32_t sLeavesAvailed,
+                                         uint32_t sLeavesLeft)
+:XyzEmployeeImpl::XyzEmployeeImpl(sEmpIdParm,
+                                  sNameParm,
+                                  sGenderParm,
+                                  sDOBParm,
+                                  sStatusParm,
+                                  sTypeParm,
+                                  sDOJParm,
+                                  sDOLParm)
+,mNumOfLeavesAvailed(sLeavesAvailed)
+,mNumOfLeavesLeft(sLeavesLeft)
 {
 }
 
@@ -43,25 +59,14 @@ void XyzFullTimeEmployee::updateNumOfLeavesLeft(uint32_t leavesParm) {
     mNumOfLeavesLeft += leavesParm; 
 }
 
-void XyzFullTimeEmployee::printEmployeeSummary(size_t maxColumnLenParm, bool printAll) {
-    //employee summary as a row in a table
-    std::stringstream sRow;
-    size_t collegeLen = empCollegeNames[IIIT_Hyderabad].length();
-    size_t agencyLen = empAgencyNames[Justice_League].length();
-    XyzEmployeeImpl::getEmployeeSummary(maxColumnLenParm, sRow);
-    sRow << "| " << std::left << std::setw(12) << getNumOfLeavesAvailed();
-    sRow << "| " << std::left << std::setw(12) << getNumOfLeavesLeft();
-    if (printAll) {
-        sRow << "| " << std::left << std::setw(7) << "N/A ";
-        sRow << "| " << std::left << std::setw(collegeLen+1) << "N/A ";
-        sRow << "| " << std::left << std::setw(agencyLen+1) << "N/A ";
-    }
-    sRow << std::left << "|";
-    std::cout << sRow.str() << std::endl;
-}
-
 void XyzFullTimeEmployee::printEmployeeDetails() {
     XyzEmployeeImpl::printEmployeeDetails();
     std::cout << "Leaves Availed   : " << mNumOfLeavesAvailed << std::endl;
     std::cout << "Leaves Left      : " << mNumOfLeavesLeft << std::endl;
+}
+
+void XyzFullTimeEmployee::getEmpRecord(XyzEmployeeRecord &empRecordParm) {
+    XyzEmployeeImpl::getEmpRecord(empRecordParm);
+    empRecordParm.sEmpLeavesAvailed = std::to_string(mNumOfLeavesAvailed);
+    empRecordParm.sEmpLeavesLeft = std::to_string(mNumOfLeavesLeft);
 }

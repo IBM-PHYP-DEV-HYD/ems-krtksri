@@ -6,26 +6,26 @@
 using namespace standardTemplates;
 
 template <class T>
-class EDeque : public Deque<T> {
+class EDLL : public Deque<T> {
 public:
-    EDeque();
-    ~EDeque();
+    EDLL();
+    ~EDLL();
     void AddElementAt(unsigned long int posParm, T& dataParm);
     void RemoveElementAt(unsigned long int posParm);
 };
 
 template <class T>
-EDeque<T>::EDeque():Deque<T>::Deque(){
+EDLL<T>::EDLL():Deque<T>::Deque(){
 
 }
 
 template <class T>
-EDeque<T>::~EDeque(){
+EDLL<T>::~EDLL(){
     
 }
 
 template <class T>
-void EDeque<T>::AddElementAt(unsigned long int posParm, T& dataParm) {
+void EDLL<T>::AddElementAt(unsigned long int posParm, T& dataParm) {
     Node<T>* sCurrentNode =  this->mHead;
     uint64_t idx = 0;
     if (nullptr != this->mHead) {
@@ -55,7 +55,7 @@ void EDeque<T>::AddElementAt(unsigned long int posParm, T& dataParm) {
 }
 
 template <class T>
-void EDeque<T>::RemoveElementAt(unsigned long int posParm) {
+void EDLL<T>::RemoveElementAt(unsigned long int posParm) {
     Node<T>* sCurrentNode = this->mHead;
     uint64_t idx = 0;
     if (this->mSize > 0) {

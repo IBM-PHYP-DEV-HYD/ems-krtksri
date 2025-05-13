@@ -3,28 +3,39 @@
 
 #include "XyzEmployeeImpl.H"
 
-class XyzFullTimeEmployee : public XyzEmployeeImpl {
-    private:
-    uint32_t mNumOfLeavesAvailed;
-    uint32_t mNumOfLeavesLeft;
-    
-    public:
+namespace EMS {
+    class XyzFullTimeEmployee : public XyzEmployeeImpl {
+        private:
+        uint32_t mNumOfLeavesAvailed;
+        uint32_t mNumOfLeavesLeft;
+        
+        public:
 
-    XyzFullTimeEmployee();
-    XyzFullTimeEmployee(XyzEmployeeImpl& empImplParm, uint32_t sLeavesAvailed, uint32_t sLeavesLeft);
-    XyzFullTimeEmployee(const std::string& sEmpIdParm, const std::string& sNameParm, EmpGender sGenderParm, const Date& sDOBParm, 
-        EmpStatus sStatusParm, EmpType sTypeParm, const Date& sDOJParm, const Date& sDOLParm, uint32_t sLeavesAvailed, uint32_t sLeavesLeft);
-    ~XyzFullTimeEmployee();
+        XyzFullTimeEmployee();
+        XyzFullTimeEmployee(XyzEmployeeImpl& empImplParm, 
+                            uint32_t sLeavesAvailed,
+                            uint32_t sLeavesLeft);
+        XyzFullTimeEmployee(const std::string& sEmpIdParm, 
+                            const std::string& sNameParm,
+                            EmpGender sGenderParm,
+                            const Date& sDOBParm, 
+                            EmpStatus sStatusParm,
+                            EmpType sTypeParm,
+                            const Date& sDOJParm,
+                            const Date& sDOLParm,
+                            uint32_t sLeavesAvailed,
+                            uint32_t sLeavesLeft);
+        ~XyzFullTimeEmployee();
 
-    void setNumOfLeavesAvailed(uint32_t numOfLeavesParm);
-    uint32_t getNumOfLeavesAvailed();
+        void setNumOfLeavesAvailed(uint32_t numOfLeavesParm);
+        uint32_t getNumOfLeavesAvailed();
 
-    void setNumOfLeavesLeft(uint32_t numOfLeavesParm);
-    uint32_t getNumOfLeavesLeft();
+        void setNumOfLeavesLeft(uint32_t numOfLeavesParm);
+        uint32_t getNumOfLeavesLeft();
 
-    virtual void updateNumOfLeavesLeft(uint32_t leavesParm);
-    virtual void printEmployeeSummary(size_t maxColumnLenParm, bool printAll = true);
-    virtual void printEmployeeDetails();
-};
-
+        virtual void getEmpRecord(XyzEmployeeRecord &empRecordParm);
+        virtual void updateNumOfLeavesLeft(uint32_t leavesParm);
+        virtual void printEmployeeDetails();
+    };
+}
 #endif

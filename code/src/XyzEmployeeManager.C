@@ -4,31 +4,17 @@
 #include <algorithm>
 #include "XyzEmployeeManager.H"
 #include "Utilities.H"
+#include "XyzEmployeeRecord.H"
 
-/* Lambda function to print the ---- lines */
-auto printLine = [](int sLineLen) {
-    for (int i = 0; i <sLineLen; i++) {
-        std::cout<<"-"; 
-    } 
-    std::cout << std::endl;
-};
+using namespace EMS;
 
-XyzEmployeeManager::XyzEmployeeManager() {
-    mColumns.pushBack(std::string(" Employee Name "));
-    mColumns.pushBack(std::string(" ID       "));
-    mColumns.pushBack(std::string(" Type       "));
-    mColumns.pushBack(std::string(" Status   "));
-    mColumns.pushBack(std::string(" Gender       "));
-    mColumns.pushBack(std::string(" Date of Birth "));
-    mColumns.pushBack(std::string(" Date of Joining "));
-    mColumns.pushBack(std::string(" Date of Leaving "));
-    mColumns.pushBack(std::string(" Leaves Used "));
-    mColumns.pushBack(std::string(" Leaves Left "));
-    mColumns.pushBack(std::string(" Branch "));
-    mColumns.pushBack(std::string(" College "));
-    mColumns.pushBack(std::string(" Agency "));
-
-    mMaxEmpNameLength = mColumns[0].length();
+XyzEmployeeManager::XyzEmployeeManager()
+: mMaxEmpNameLength(0)
+{
+    mEmpColumnsSupported.empCommonDetailsBit = 0;
+    mEmpColumnsSupported.empFullTimeBit = 0;
+    mEmpColumnsSupported.empContractBit = 0;
+    mEmpColumnsSupported.empInternBit = 0;
 }
 
 XyzEmployeeManager::~XyzEmployeeManager() {
@@ -53,6 +39,7 @@ XyzEmployeeIF* XyzEmployeeManager::createEmployeeObject(EmpType baseEmpParm) {
     Date sEmpDOL;
 
     mMaxEmpNameLength = std::max(mMaxEmpNameLength, sEmpName.length());
+    mEmpColumnsSupported.empCommonDetailsBit = 1;
 
     if (Contract == sEmpType) {
         Date sDate(0,0,1); // 1 year contract
@@ -71,15 +58,18 @@ XyzEmployeeIF* XyzEmployeeManager::createEmployeeObject(EmpType baseEmpParm) {
             uint32_t sLeavesAvailed = getRandomNumber(MinLeaves, MaxLeaves);
             uint32_t sLeavesLeft = MaxLeaves - sLeavesAvailed;
             empObj = new XyzFullTimeEmployee(sEmpID, sEmpName, sEmpGender, sEmpDOB, sEmpStatus, sEmpType, sEmpDOJ, sEmpDOL, sLeavesAvailed, sLeavesLeft);
+            mEmpColumnsSupported.empFullTimeBit = 1;
         }
         else if (Contract == sEmpType) {
             Agency sEmpAgency = getRandomAgency();
             empObj = new XyzContractEmployee(sEmpID, sEmpName, sEmpGender, sEmpDOB, sEmpStatus, sEmpType, sEmpDOJ, sEmpDOL, sEmpAgency);
+            mEmpColumnsSupported.empContractBit = 1;
         }
         else if (Intern == sEmpType){
             Colleges sCollege = getRandomColleges();
             Branch sBranch = getRandomBranch();
             empObj = new XyzInternEmployee(sEmpID, sEmpName, sEmpGender, sEmpDOB, sEmpStatus, sEmpType, sEmpDOJ, sEmpDOL, sCollege, sBranch);
+            mEmpColumnsSupported.empInternBit = 1;
         }
         else {
             std::cout << "Invalid object type" << std::endl;
@@ -105,6 +95,12 @@ void XyzEmployeeManager::removeEmployee(std::string & empIdParm) {
     if (!empIdParm.empty()) {
         int pos = searchEmployeeById(empIdParm);
         if (pos >= 0) {
+            XyzEmployeeIF* empObj = mEmpList[pos];
+            std::cout << "Removing employee ID: " << empObj->getEmployeeID() << std::endl;
+            XyzEmployeeIF* remObj = new XyzEmployeeImpl(empObj->getEmployeeID(), empObj->getEmployeeName(), empObj->getEmployeeGender()
+                                                        ,empObj->getEmployeeDOB(), empObj->getEmployeeStatus(), empObj->getEmployeeType()
+                                                        ,empObj->getEmployeeDOJ(), empObj->getEmployeeDOL());
+            mResignedEmpList.pushBack(remObj);
             mEmpList.RemoveElementAt(pos);
         }
         else {
@@ -117,12 +113,15 @@ void XyzEmployeeManager::processDetailsMenu(int sChoiceParm) {
     switch(sChoiceParm) {
         case Menu_option_1:
         {
-            int sLines = printColumns(AllEmpColumns);
+            XyzEmployeeRecord sEmpRecord;
+            size_t sLineLen = sEmpRecord.printAllHeader(mMaxEmpNameLength, mEmpColumnsSupported);
             for (int i = 0; i < mEmpList.size(); i++) {
                 XyzEmployeeIF* empObj = mEmpList[i];
-                empObj->printEmployeeSummary(mMaxEmpNameLength);
+                empObj->getEmpRecord(sEmpRecord);
+                sEmpRecord.printAllEmpData(mMaxEmpNameLength, mEmpColumnsSupported);
+                sEmpRecord.clear();
             }
-            printLine(sLines);
+            sEmpRecord.printLine(sLineLen);
             break;
         }
         case Menu_option_2:
@@ -131,14 +130,17 @@ void XyzEmployeeManager::processDetailsMenu(int sChoiceParm) {
             int sEmpType = Rc_Failure;
             std::cin >> sEmpType;
             if (IsInputValid() == Rc_Success) {
-                int sLines = printColumns((EmpColumns)sEmpType);
+                XyzEmployeeRecord sEmpRecord;
+                size_t sLineLen = sEmpRecord.printHeader(mMaxEmpNameLength, mEmpColumnsSupported, sEmpType);
                 for (int i = 0; i < mEmpList.size(); i++) {
                     XyzEmployeeIF* empObj = mEmpList[i];
                     if (sEmpType == empObj->getEmployeeType()) {
-                        empObj->printEmployeeSummary(mMaxEmpNameLength, false);
+                        empObj->getEmpRecord(sEmpRecord);
+                        sEmpRecord.printEmpData(mMaxEmpNameLength, sEmpType);
+                        sEmpRecord.clear();
                     }
                 }
-                printLine(sLines);
+                sEmpRecord.printLine(sLineLen);
             }
             break;
         }
@@ -148,14 +150,17 @@ void XyzEmployeeManager::processDetailsMenu(int sChoiceParm) {
             int empGender = Rc_Failure;
             std::cin >> empGender;
             if (IsInputValid() == Rc_Success) {
-                int sLines = printColumns(AllEmpColumns);
+                XyzEmployeeRecord sEmpRecord;
+                size_t sLineLen = sEmpRecord.printAllHeader(mMaxEmpNameLength, mEmpColumnsSupported);
                 for (int i = 0; i < mEmpList.size(); i++) {
                     XyzEmployeeIF* empObj = mEmpList[i];
                     if (empGender == empObj->getEmployeeGender()) {
-                        empObj->printEmployeeSummary(mMaxEmpNameLength);
+                        empObj->getEmpRecord(sEmpRecord);
+                        sEmpRecord.printAllEmpData(mMaxEmpNameLength, mEmpColumnsSupported);
+                        sEmpRecord.clear();
                     }
                 }
-                printLine(sLines);
+                sEmpRecord.printLine(sLineLen);
             }
             break;
         }
@@ -163,27 +168,31 @@ void XyzEmployeeManager::processDetailsMenu(int sChoiceParm) {
         {
             std::cout <<"Enter type of employee summary: 0 = Active, 1 = Inactive, 2 = Resigned" << std::endl;
             int sEmpStatus = Rc_Failure;
-            int sLines = 0;
+            // int sLines = 0;
             std::cin >> sEmpStatus;
             if (IsInputValid() == Rc_Success) {
+                XyzEmployeeRecord sEmpRecord;
                 if (Resigned == sEmpStatus) {
-                    sLines = printColumns(BasicEmpColumns);
-                    //std::cout << "Printing size: " << mResignedEmpList.size() << std::endl;
+                    size_t sLineLen = sEmpRecord.printHeader(mMaxEmpNameLength, mEmpColumnsSupported);
                     for (int i = 0; i <  mResignedEmpList.size(); i++) {
                         XyzEmployeeIF* empObj = mResignedEmpList[i];
-                        empObj->printEmployeeSummary(mMaxEmpNameLength);
+                        empObj->getEmpRecord(sEmpRecord);
+                        sEmpRecord.printEmpData(mMaxEmpNameLength);
+                        sEmpRecord.clear();
                     }
-                    printLine(sLines);
+                    sEmpRecord.printLine(sLineLen);
                 }
                 else {
-                    sLines = printColumns(AllEmpColumns);
+                    size_t sLineLen = sEmpRecord.printAllHeader(mMaxEmpNameLength, mEmpColumnsSupported);
                     for (int i = 0; i < mEmpList.size(); i++) {
                         XyzEmployeeIF* empObj = mEmpList[i];
                         if (sEmpStatus == empObj->getEmployeeStatus()) {
-                            empObj->printEmployeeSummary(mMaxEmpNameLength);
+                            empObj->getEmpRecord(sEmpRecord);
+                            sEmpRecord.printAllEmpData(mMaxEmpNameLength, mEmpColumnsSupported);
+                            sEmpRecord.clear();
                         }
                     }
-                    printLine(sLines);
+                    sEmpRecord.printLine(sLineLen);
                 }
             }
             break;
@@ -203,13 +212,13 @@ void XyzEmployeeManager::processDetailsMenu(int sChoiceParm) {
 
 void XyzEmployeeManager::processAddMenu(int sChoiceParm) {
     switch(sChoiceParm) {
-        case Menu_option_1:
+        case EMS::MenuOptions::Menu_option_1:
         {
             EmpType empType = (EmpType)getRandomNumber(FullTime, Intern);
             addEmployee(empType);
             break;
         }
-        case Menu_option_2:
+        case EMS::MenuOptions::Menu_option_2:
         {
             std::cout << "Enter employee type 0 = FullTime, 1 = Contract, 2 = Intern " << std::endl;
             int empType = FullTime;
@@ -222,7 +231,7 @@ void XyzEmployeeManager::processAddMenu(int sChoiceParm) {
             }
             break;
         }
-        case Menu_option_3:
+        case EMS::MenuOptions::Menu_option_3:
         {
             int sNumOfEmp = 0;
             std::cout << "Enter the number of employees hired: " << std::endl;
@@ -235,7 +244,7 @@ void XyzEmployeeManager::processAddMenu(int sChoiceParm) {
             }
             break;
         }
-        case Menu_exit:
+        case EMS::MenuOptions::Menu_exit:
         {
             std::cout << "Going back to previous" << std::endl;
             break;
@@ -250,7 +259,7 @@ void XyzEmployeeManager::processAddMenu(int sChoiceParm) {
 
 void XyzEmployeeManager::processOtherMenu(int sChoiceParm) {
     switch (sChoiceParm) {
-        case Menu_option_1:
+        case EMS::MenuOptions::Menu_option_1:
         {
             std::cout << "Enter number of leaves to be added" << std::endl;
             uint16_t sNumOfLeaves = 0;
@@ -263,7 +272,7 @@ void XyzEmployeeManager::processOtherMenu(int sChoiceParm) {
             }
             break;
         }
-        case Menu_option_2:
+        case EMS::MenuOptions::Menu_option_2:
         {
             std::string sEmpID;
             std::cout << "Enter employee id to convert to full time employee: " << std::endl;
@@ -274,7 +283,7 @@ void XyzEmployeeManager::processOtherMenu(int sChoiceParm) {
             }
             break;
         }
-        case Menu_option_3:
+        case EMS::MenuOptions::Menu_option_3:
         {
             //Search employee by Id
             std::string sEmpId;
@@ -293,7 +302,7 @@ void XyzEmployeeManager::processOtherMenu(int sChoiceParm) {
             
             break;
         }
-        case Menu_option_4:
+        case EMS::MenuOptions::Menu_option_4:
         {
             //Search employee by Name
             std::string sEmpName;
@@ -378,63 +387,3 @@ void XyzEmployeeManager::convertToFullTimeEmployee(std::string& empIdParm) {
         std::cout << "Invalid employee Id" << std::endl;
     }
 }
-
-int XyzEmployeeManager::printColumns(EmpColumns empTypeParm) {
-    //------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //| Employee Name   | ID  | Type  | Status | Gender | Date of Birth | Date Of Joining | Date Of Leaving | Leaves Availed | Leaves Left | Branch | College | Agency |
-    //------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    std::stringstream sColumns;
-    size_t lineLen = mMaxEmpNameLength + 1;
-    size_t collegeLen = std::string("IIIT_Hyderabad").length();
-    size_t agencyLen = std::string("Jusice_League").length();
-    sColumns.str("");
-    sColumns.clear();
-    sColumns << "|" << std::setw(mMaxEmpNameLength+2) << std::left << mColumns[0];
-    for (int i = 1; i < mColumns.size()-5; i++) { //Left out 5 specific column names related to the type of employee; 2 for Fulltime, 1 for contractor, 2 for Intern
-        sColumns << "|" << mColumns[i];
-        lineLen += mColumns[i].length()+1;
-    }
-
-    if (BasicEmpColumns != empTypeParm) {
-        switch(empTypeParm) {
-            case FullTimeEmpColumns: {
-                for (int i = 8; i < mColumns.size()-3; i++) {
-                    sColumns << "|" << mColumns[i];
-                    lineLen += mColumns[i].length()+1;
-                }
-                break;
-            }
-            case InternEmpColumns: {
-                sColumns << "|" << mColumns[10]; //branch column name
-                sColumns << "|" << std::setw( collegeLen + 2) << mColumns[11];
-                lineLen += collegeLen + 2 + mColumns[10].length()+1;
-                break;
-            }
-            case ContractEmpColumns: {
-                sColumns << "|" << std::setw( agencyLen + 2) << mColumns[12];
-                lineLen += agencyLen + 2 + 1;
-                break;
-            }
-            case AllEmpColumns:
-            default: {
-                for (int i = 8; i < mColumns.size()-2; i++) {
-                    sColumns << "|" << mColumns[i];
-                    lineLen += mColumns[i].length()+1;
-                }
-                sColumns << "|" << std::setw(collegeLen + 2) << mColumns[11];
-                sColumns << "|" << std::setw(agencyLen + 2) << mColumns[12];
-                lineLen += collegeLen + agencyLen + 6;
-                break;
-            }
-        }
-    }
-
-    lineLen += 3;
-
-    printLine(lineLen);
-    std::cout << sColumns.str() << "|"<< std::endl;
-    printLine(lineLen);
-
-    return lineLen;
-}
-

@@ -8,33 +8,33 @@
 
 #include "Deque.H"
 #include "Utilities.H"
-#include "EDeque.H"
+#include "EDLL.H"
 
-class XyzEmployeeManager {
-    public:
-    EDeque<XyzEmployeeIF*> mEmpList;
-    //TODO - Here we no need to maintain all the details like current employee, Try to cut down the data which is not needed
-    EDeque<XyzEmployeeIF*> mResignedEmpList; 
-    Deque<std::string> mColumns;
-    size_t mMaxEmpNameLength;
+namespace EMS {
+    class XyzEmployeeManager {
+        public:
+        EDLL<XyzEmployeeIF*> mEmpList;
+        //TODO - Here we no need to maintain all the details like current employee, Try to cut down the data which is not needed
+        EDLL<XyzEmployeeIF*> mResignedEmpList;
+        size_t mMaxEmpNameLength;
+        EmpColumnBits mEmpColumnsSupported;
 
-    XyzEmployeeManager();
-    ~XyzEmployeeManager();
+        XyzEmployeeManager();
+        ~XyzEmployeeManager();
 
-    XyzEmployeeIF* createEmployeeObject(EmpType baseEmpParm);
-    void addEmployee(EmpType empTypeParm);
-    void removeEmployee(std::string& empId);
-    void convertToFullTimeEmployee(std::string& empId);
-    void processAddMenu(int sChoiceParm);
-    void processDetailsMenu(int sChoiceParm);
-    void processOtherMenu(int sChoiceParm);
-    void searchEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
-    void searchResignedEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
-    int  searchEmployeeById(std::string& inputParm);
-    int  searchResignedEmployeeById(std::string& inputIdParm);
-    size_t getMaxNameColumnWidth();
-    int printColumns(EmpColumns empColumnsParm = BasicEmpColumns);
-};
-
+        XyzEmployeeIF* createEmployeeObject(EmpType baseEmpParm);
+        void addEmployee(EmpType empTypeParm);
+        void removeEmployee(std::string& empId);
+        void convertToFullTimeEmployee(std::string& empId);
+        void processAddMenu(int sChoiceParm);
+        void processDetailsMenu(int sChoiceParm);
+        void processOtherMenu(int sChoiceParm);
+        void searchEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
+        void searchResignedEmployeeByName(std::string& inputNameParm, Deque<XyzEmployeeIF*>& empList);
+        int  searchEmployeeById(std::string& inputParm);
+        int  searchResignedEmployeeById(std::string& inputIdParm);
+        size_t getMaxNameColumnWidth();
+    };
+}
 
 #endif
