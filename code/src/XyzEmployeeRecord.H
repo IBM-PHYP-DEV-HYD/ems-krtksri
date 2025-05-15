@@ -30,7 +30,7 @@ namespace EMS {
         size_t getInternEmpHeader(std::stringstream& sEmpInfoParm);
         void clear();
         size_t printAllHeader(size_t maxColumnLenParm, const EmpColumnBits &empCoulmnToPrintParm);
-        size_t printHeader(size_t maxColumnLenParm, const EmpColumnBits &empCoulmnToPrintParm, int empType = -1);
+        size_t printHeader(size_t maxColumnLenParm, int empType = -1);
         size_t printFullTimeHeader(size_t maxColumnLenParm, const EmpColumnBits &empCoulmnToPrintParm);
         size_t printContractorHeader(size_t maxColumnLenParm, const EmpColumnBits &empCoulmnToPrintParm);
         size_t printInternHeader(size_t maxColumnLenParm, const EmpColumnBits &empCoulmnToPrintParm);

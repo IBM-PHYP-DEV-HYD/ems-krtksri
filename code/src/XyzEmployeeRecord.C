@@ -120,7 +120,7 @@ namespace EMS {
         return sLineLen;
     }
 
-    size_t XyzEmployeeRecord::printHeader(size_t maxColumnLenParm, const EmpColumnBits &empCoulmnToPrintParm, int empTypeParm) {
+    size_t XyzEmployeeRecord::printHeader(size_t maxColumnLenParm, int empTypeParm) {
         std::stringstream sHeader;
         size_t sLineLen = 0;
         sLineLen = getCommonEmpHeader(maxColumnLenParm, sHeader);

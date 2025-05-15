@@ -131,7 +131,7 @@ void XyzEmployeeManager::processDetailsMenu(int sChoiceParm) {
             std::cin >> sEmpType;
             if (IsInputValid() == Rc_Success) {
                 XyzEmployeeRecord sEmpRecord;
-                size_t sLineLen = sEmpRecord.printHeader(mMaxEmpNameLength, mEmpColumnsSupported, sEmpType);
+                size_t sLineLen = sEmpRecord.printHeader(mMaxEmpNameLength, sEmpType);
                 for (int i = 0; i < mEmpList.size(); i++) {
                     XyzEmployeeIF* empObj = mEmpList[i];
                     if (sEmpType == empObj->getEmployeeType()) {
@@ -173,7 +173,7 @@ void XyzEmployeeManager::processDetailsMenu(int sChoiceParm) {
             if (IsInputValid() == Rc_Success) {
                 XyzEmployeeRecord sEmpRecord;
                 if (Resigned == sEmpStatus) {
-                    size_t sLineLen = sEmpRecord.printHeader(mMaxEmpNameLength, mEmpColumnsSupported);
+                    size_t sLineLen = sEmpRecord.printHeader(mMaxEmpNameLength);
                     for (int i = 0; i <  mResignedEmpList.size(); i++) {
                         XyzEmployeeIF* empObj = mResignedEmpList[i];
                         empObj->getEmpRecord(sEmpRecord);
