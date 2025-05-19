@@ -56,7 +56,6 @@ namespace EMS {
             virtual void getEmpRecord(XyzEmployeeRecord &empRecordParm);
             virtual void printEmployeeDetails();
             virtual void updateNumOfLeavesLeft(uint32_t leaveParm);
-            void getEmployeeSummary(size_t maxColumnLenParm, std::stringstream& sEmpInfoParm);
     };
 }
 #endif

@@ -114,21 +114,6 @@ void XyzEmployeeImpl::updateNumOfLeavesLeft(uint32_t leaveParm) {
 // The definition will be added by the Full-time class
 }
 
-void XyzEmployeeImpl::getEmployeeSummary(size_t maxColumnLenParm, std::stringstream& sEmpInfoParm) {
-    sEmpInfoParm.str("");
-    sEmpInfoParm.clear();
-    sEmpInfoParm << "| " << std::left << std::setw(maxColumnLenParm + 1) <<  getEmployeeName();
-    sEmpInfoParm << "| " << std::left << std::setw(9) << getEmployeeID();
-    sEmpInfoParm << "| " << std::left << std::setw(11) << getEmployeeTypeName(getEmployeeType());
-    sEmpInfoParm << "| " << std::left << std::setw(9) << getEmployeeStatusName(getEmployeeStatus());
-    sEmpInfoParm << "| " << std::left << std::setw(13) << getEmployeeGenderName(getEmployeeGender());
-    sEmpInfoParm << "| " << std::left << std::setw(14) << getEmployeeDOB().toString();
-    sEmpInfoParm << "| " << std::left << std::setw(16) << getEmployeeDOJ().toString();
-    
-    std::string sDOL = getEmployeeDOL().toString();
-    sEmpInfoParm << "| " << std::left << std::setw(16) << (((FullTime == getEmployeeType()) && (Resigned != getEmployeeStatus())) ? "N/A" : sDOL);
-}
-
 void XyzEmployeeImpl::getEmpRecord(XyzEmployeeRecord &empRecordParm) {
     empRecordParm.sEmpName = mEmpName;
     empRecordParm.sEmpID = mEmpId;
